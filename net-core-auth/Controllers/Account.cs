@@ -6,40 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace fortegroup.api
 {
     [Route("api/[controller]")]
-    public class NoteController : Controller
+    public class AccountController : Controller
     {
-        private static List<Note> _notes;
-        static NoteController()
+        private UserDAL _dal;
+        public AccountController()
         {
-            _notes = new List<Note>()
-            {
-                new Note
-                {
-                    Id = 1,
-                    Content = "Renato"
-                },
-                new Note
-                {
-                    Id = 2,
-                    Content = "Vanessa"
-                }
-            };
+            _dal = new UserDAL("Server=localhost;Database=ForteGroup;Trusted_Connection=false;User Id=sa;Password=Senha12345");
         }
-
 
         [HttpGet]
-        public IEnumerable<Note> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return _notes.AsReadOnly();
+            return _dal.GetAll();
         }
 
-        [HttpGet("{id}", Name = "GetNote")]
+        [HttpGet("{id}", Name = "GetUser")]
         public IActionResult GetById(string id)
         {
             var value = 0;
             int.TryParse(id, out value);
             
-            var item = _notes.Find(n => n.Id == value);
+            var item = _dal.GetByID(value);
             if (item == null)
             {
                 return NotFound();
@@ -48,24 +35,22 @@ namespace fortegroup.api
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Note item)
+        public IActionResult Create([FromBody] User item)
         {
             if (item == null)
             {
                 return BadRequest();
             }
-            item.Id = _notes.Count + 1;
-            _notes.Add(item);
-            return CreatedAtRoute("GetNote", new { controller = "Note", id = item.Id }, item);
+            return CreatedAtRoute("GetUser", new { controller = "Account", id = item.Id }, item);
         }
 
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public IActionResult Delete(string id)
         {
             var value = 0;
             int.TryParse(id, out value);
 
-            _notes.RemoveAll(n => n.Id == value);
+            return null;
         }        
     }
 }
