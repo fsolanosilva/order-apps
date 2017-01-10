@@ -50,11 +50,13 @@ mongo.prototype.findOne = function(db, collectionName, json){
 mongo.prototype.find = function(db, collectionName, json){
     var promise = new RSVP.Promise(function(resolve, reject) {
         var collection = db.collection(collectionName);
-        var result = collection.find(json);
         var rows = [];
-        result.toArray(function(err, results){
-            rows.push(results);
+        var cursor = collection.find(json);
+
+        cursor.forEach(function(x){
+            rows.push(x);
         });
+
         debug("result => ", rows);
         resolve(rows);
     });

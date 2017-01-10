@@ -11,13 +11,7 @@ namespace fortegroup.api
         private UserDAL _dal;
         public AccountController()
         {
-            _dal = new UserDAL("Server=localhost;Database=ForteGroup;Trusted_Connection=false;User Id=sa;Password=Senha12345");
-        }
-
-        [HttpGet]
-        public IEnumerable<User> GetAll()
-        {
-            return _dal.GetAll();
+            this._dal = new UserDAL("Server=localhost;Database=ForteGroup;Trusted_Connection=false;User Id=sa;Password=Senha12345");
         }
 
         [HttpGet("{id}", Name = "GetUser")]
@@ -35,22 +29,19 @@ namespace fortegroup.api
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] User item)
+        public JsonResult Login([FromBody] User data)
         {
+            if (data == null)
+            {
+                throw new HttpException(404, "data not found");
+            }
+            var item = _dal.GetByEmail(data.Email);
             if (item == null)
             {
-                return BadRequest();
-            }
-            return CreatedAtRoute("GetUser", new { controller = "Account", id = item.Id }, item);
+                throw new HttpException(404, "user not found");
+            }           
+            var token = fortegroup.api.Helper.Token.JsonWebToken.Encode(item, "fortegroup", JwtHashAlgorithm.HS256);
+            return new JsonResult(token);
         }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
-        {
-            var value = 0;
-            int.TryParse(id, out value);
-
-            return null;
-        }        
     }
 }

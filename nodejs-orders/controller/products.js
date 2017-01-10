@@ -59,7 +59,7 @@ productsController.prototype.getByName = function(request, response, next){
             }
             debug("finding by name => ", name);
             // looking for the order number on mongo db
-            mongo.find(self.db, "products", { "name" : /name/ })
+            mongo.find(self.db, "products", { "name" : { $regex : name } })
                 .then(function(result){
                     response.status(201);
                     response.json(result);

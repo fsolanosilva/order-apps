@@ -36,5 +36,15 @@ namespace fortegroup.api
                 return dbConnection.Query<User>(sQuery, new { Id = id }).FirstOrDefault();
             }
         }
+
+        public User GetByEmail(string email)
+        {
+            using (IDbConnection dbConnection = Connection)
+            {
+                string sQuery = "SELECT * FROM dbo.Users WHERE Email = @Email";
+                dbConnection.Open();
+                return dbConnection.Query<User>(sQuery, new { Email = email }).FirstOrDefault();
+            }
+        }
     }
 }
