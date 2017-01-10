@@ -26,7 +26,7 @@ mongo.prototype.insert = function(db, collectionName, json){
             if (err) {
                 reject(err);
             } else {
-                resolve(null);
+                resolve(result);
             }
         });
     });

@@ -26,7 +26,7 @@ ordersController.prototype.getByID = function(request, response, next){
         .then(function(result){
             var order = request.params.order;
             // validate order parameter
-            if ((order === "") || (order === "")){
+            if ((order === null) || (order === "")){
                 response.status(404);
                 response.send("Order parameter not found!");
                 return;
@@ -36,6 +36,30 @@ ordersController.prototype.getByID = function(request, response, next){
                 .then(function(item){
                     response.status(201);
                     response.json(item);
+                })
+                .catch(function(err){
+                    debug("Error => ", err);
+                    next(err);
+                });
+        });
+};
+
+ordersController.prototype.create = function(request, response, next){
+    var self = this;
+    ntw.validateToken(request, jwtkey)
+        .catch(function(error){
+            response.status(403).send(error);
+        })
+        .then(function(result){
+            debug("order request => ", request);
+
+            var body = request.body;
+            debug("order => ", body);
+
+            mongo.insert(self.db, "orders", body)
+                .then(function(result){
+                    response.status(201);
+                    response.json(result);
                 })
                 .catch(function(err){
                     debug("Error => ", err);
