@@ -43,6 +43,34 @@ productsController.prototype.getBySKU = function(request, response, next){
         });
 };
 
+productsController.prototype.getByName = function(request, response, next){
+    var self = this;
+    ntw.validateToken(request, jwtkey)
+        .catch(function(error){
+            response.status(403).send(error);
+        })
+        .then(function(result){
+            var name = request.params.name;
+            // validate order parameter
+            if ((name === "") || (name === "")){
+                response.status(404);
+                response.send("name parameter not found!");
+                return;
+            }
+            debug("finding by name => ", name);
+            // looking for the order number on mongo db
+            mongo.find(self.db, "products", { "name" : /name/ })
+                .then(function(result){
+                    response.status(201);
+                    response.json(result);
+                })
+                .catch(function(err){
+                    debug("Error => ", err);
+                    next(err);
+                });
+        });
+};
+
 module.exports = function(mongoURL){
     return new productsController(mongoURL);
 };
