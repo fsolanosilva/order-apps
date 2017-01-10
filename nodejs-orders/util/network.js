@@ -1,5 +1,6 @@
 'use strict';
 
+var debug = require("debug")("fortegroup:util:network");
 var jwt = require('jsonwebtoken');
 var RSVP = require('rsvp');
 
@@ -39,14 +40,16 @@ networkUtil.prototype.validateToken = function(req, jwtkey){
     var token = req.body.token || req.query.token || req.headers['access-token'];
     var promise = new RSVP.Promise(function(resolve, reject) {
         if (token){
+            debug("token => ", token);
             jwt.verify(token, jwtkey, function(err, decoded) {
                 if (err) {
+                    debug("token error => ", err);
                     reject({error: "Failed to authenticate token"});
                 } else {
+                    debug("token ok");
                     resolve(null);
                 }
             });
-
         } else {
             reject({error: "no token provided"});
         }

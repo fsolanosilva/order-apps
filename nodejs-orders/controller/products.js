@@ -17,11 +17,12 @@ function productsController(mongoURL){
 };
 
 productsController.prototype.getBySKU = function(request, response, next){
+    var self = this;
     ntw.validateToken(request, jwtkey)
         .catch(function(error){
             response.status(403).send(error);
         })
-        .then(function(){
+        .then(function(result){
             var sku = request.params.sku;
             // validate order parameter
             if ((sku === "") || (sku === "")){
@@ -30,7 +31,7 @@ productsController.prototype.getBySKU = function(request, response, next){
                 return;
             }
             // looking for the order number on mongo db
-            mongo.findOne(this.db, "products", { "sku" : sku })
+            mongo.findOne(self.db, "products", { "sku" : sku })
                 .then(function(item){
                     response.status(201);
                     response.json(item);

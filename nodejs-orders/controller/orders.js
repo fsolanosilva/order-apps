@@ -18,11 +18,12 @@ function ordersController(mongoURL){
 };
 
 ordersController.prototype.getByID = function(request, response, next){
+    var self = this;
     ntw.validateToken(request, jwtkey)
         .catch(function(error){
             response.status(403).send(error);
         })
-        .then(function(){
+        .then(function(result){
             var order = request.params.order;
             // validate order parameter
             if ((order === "") || (order === "")){
@@ -31,7 +32,7 @@ ordersController.prototype.getByID = function(request, response, next){
                 return;
             }
             // looking for the order number on mongo db
-            mongo.findOne(this.db, "orders", { "ID" : order })
+            mongo.findOne(self.db, "orders", { "ID" : order })
                 .then(function(item){
                     response.status(201);
                     response.json(item);
