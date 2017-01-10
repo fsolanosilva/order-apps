@@ -4,13 +4,13 @@ Demo solution using .net core to auth and authorize users using JWT, node js api
 Let me introduce this repo:
 
 - mongodb: 
-contains some scripts do initialize some collectoins like users, products and orders.
+contains some scripts to initialize some collectoins like users, products and orders.
 
 - net-core-auth:
-.net core api using Dapper ORM, SQL Server 2016 and Json Web Tokens (JWT) to authenticate users
+.net core api using Dapper ORM, SQL Server 2016 and Json Web Tokens (JWT) to authenticate users and validate transactions
 
 - net-json-web-token:
-windows forms application used to generate JWT only for simple tests
+windows forms application, only used to generate JWT (test app)
 
 - node-js-orders
 nodejs api to create and get orders and also with some routines to search products by ID and name. 
