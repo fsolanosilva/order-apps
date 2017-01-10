@@ -1,5 +1,5 @@
 # order-apps
-Demo solution using .net core to auth and authorize users using JWT, node js api to allow client applications to create and find orders, search products and finally to React Web Client and Android studio solution to consume both apis. The solution was built using Visual Studio Code for any plataform, NodeJS, MongoDB and SQL Server 2016 express.
+Demo solution using .net core to auth and authorize users using JWT, node js api to allow client applications to create and find orders, search products and finally React Web Components and Android studio solution to consume both Apis. The solution was built using Visual Studio Code for any platform, NodeJS, MongoDB and SQL Server 2016 express.
 
 Let me introduce this repo:
 
