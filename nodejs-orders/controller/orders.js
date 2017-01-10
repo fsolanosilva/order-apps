@@ -2,6 +2,9 @@
 
 var debug = require("debug")("fortegroup:controller:orders");
 var mongo = require("../db/mongo");
+var ntw = require("../util/network");
+var jwtkey = require("../config/config").jwt().secret;
+
 
 function ordersController(mongoURL){
     var self = this;
@@ -15,22 +18,28 @@ function ordersController(mongoURL){
 };
 
 ordersController.prototype.getByID = function(request, response, next){
-    var order = request.params.order;
-    // validate order parameter
-    if ((order === "") || (order === "")){
-        response.status(404);
-        response.send("Order parameter not found!");
-        return;
-    }
-    // looking for the order number on mongo db
-    mongo.findOne(this.db, "orders", { "ID" : order })
-        .then(function(item){
-            response.status(201);
-            response.json(item);
+    ntw.validateToken(request, jwtkey)
+        .catch(function(error){
+            response.status(403).send(error);
         })
-        .catch(function(err){
-            debug("Error => ", err);
-            next(err);
+        .then(function(){
+            var order = request.params.order;
+            // validate order parameter
+            if ((order === "") || (order === "")){
+                response.status(404);
+                response.send("Order parameter not found!");
+                return;
+            }
+            // looking for the order number on mongo db
+            mongo.findOne(this.db, "orders", { "ID" : order })
+                .then(function(item){
+                    response.status(201);
+                    response.json(item);
+                })
+                .catch(function(err){
+                    debug("Error => ", err);
+                    next(err);
+                });
         });
 };
 

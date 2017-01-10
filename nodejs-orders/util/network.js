@@ -1,5 +1,8 @@
 'use strict';
 
+var jwt = require('jsonwebtoken');
+var RSVP = require('rsvp');
+
 function networkUtil(){}
 
 networkUtil.prototype.ip = function(request){
@@ -31,5 +34,25 @@ networkUtil.prototype.post = function(url, header, data){
         dataType: 'json'
     });
 };
+
+networkUtil.prototype.validateToken = function(req, jwtkey){
+    var token = req.body.token || req.query.token || req.headers['access-token'];
+    var promise = new RSVP.Promise(function(resolve, reject) {
+        if (token){
+            jwt.verify(token, jwtkey, function(err, decoded) {
+                if (err) {
+                    reject({error: "Failed to authenticate token"});
+                } else {
+                    resolve(null);
+                }
+            });
+
+        } else {
+            reject({error: "no token provided"});
+        }
+    });
+    return promise;
+};
+
 
 module.exports = new networkUtil();

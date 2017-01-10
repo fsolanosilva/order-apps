@@ -18,4 +18,11 @@ config.prototype.redis = function(){
     return null;
 };
 
+config.prototype.jwt = function(){
+    if (env === "DEV") {
+        return require("./jwt/dev.json");
+    }
+    return null;
+};
+
 module.exports = new config();

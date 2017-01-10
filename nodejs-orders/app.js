@@ -4,13 +4,18 @@ var debug = require("debug")("fortegroup:app");
 var express = require("express");
 var methodOverride = require("method-override");
 var bodyParser = require("body-parser");
+var morgan = require('morgan');
 var app = express();
+var config = require("./config/config");
 
 // server config
 app.use(methodOverride('X-HTTP-Method'));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(methodOverride('X-Method-Override'));
 app.use(methodOverride('_method'));
+
+// log requests
+app.use(morgan('dev'));
 
 // body parser
 app.use(bodyParser.json());
